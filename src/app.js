@@ -1,15 +1,20 @@
 // Importing packages
 const express = require("express");
-
+require("./database/mongodb");
 // Setting up object app as a router.
 const app = express();
 
 // Importing local files.
 const userRouter = require("./routes/userRouter");
-
+const api = require("./data/apidata");
 // Setting up routes (or) route end-points
 app.get("/", (req, res) => {
-  res.send("Welcome to home page");
+  try {
+    api.getStockData();
+    res.send("Welcome to home page");
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 app.use(userRouter);
