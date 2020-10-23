@@ -8,7 +8,7 @@ const getStockData = async () => {
     var i = 0;
     let items = [];
     time.start();
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < BOM.length; i++) {
       const data = await getFromQuandl(BOM[i].BOMcode);
       const item = data?.data?.dataset;
       let object = {
