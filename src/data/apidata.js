@@ -77,7 +77,7 @@ const getStockData = async () => {
       };
       const query = { name: item.name };
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
-      const success = await TopGainer.findOneAndUpdate(query, object, options);
+      const success = await TopGainers.findOneAndUpdate(query, object, options);
       console.log(`${item.name} is pushed to database`);
     });
     console.log("Added top Gainers to DB");

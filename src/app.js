@@ -1,19 +1,20 @@
 // Importing packages
 const express = require("express");
 require("./database/mongodb");
-// Setting up object app as a router.
+// Setting up object app as a router
 const app = express();
 const cron = require("node-cron");
-// Importing local files.
+// Importing local files
 const userRouter = require("./routes/userRouter");
-const User = require("./database/userSchema");
+const stockRouter = require("./routes/stockRouter");
 const api = require("./data/apidata");
+const cors = require("cors");
 // Run scripts
 cron.schedule(
-  "0 0 * * *",
+  "0 22 * * *",
   () => {
     console.log(
-      `Starting to get Data from API. Do not turn off the server or pc!!! It is ${Date.now().toString()}`
+      `Starting to get Data from API. Do not turn off the server or pc!!!`
     );
     api.getStockData();
     api.getIndices();
@@ -23,16 +24,18 @@ cron.schedule(
     timezone: "Asia/Kolkata",
   }
 );
+app.use(cors());
 // Setting up routes (or) route end-points
 app.get("/", (req, res) => {
   try {
-    res.send("Welcome to home page");
+    res.json({ message: "Welcome to home page" });
   } catch (e) {
     console.log(e);
   }
 });
 
 app.use(userRouter);
+app.use(stockRouter);
 
 app.get("*", (req, res) => {
   res.send("ERROR 404! Page not found");
