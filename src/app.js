@@ -25,6 +25,7 @@ cron.schedule(
   }
 );
 app.use(cors());
+app.use(express.json());
 // Setting up routes (or) route end-points
 app.get("/", (req, res) => {
   try {

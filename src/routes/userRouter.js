@@ -18,10 +18,9 @@ router.get("/user", async (req, res) => {
 // Creates a new user
 router.post("/user", (req, res) => {
   try {
-    const newUser = req.body.newUser;
-    const user = new User(newUser);
+    const user = new User(req.body);
     user.save();
-    res.status(201).json({ message: "Success" });
+    res.status(201).json({ message: "Success", user });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
