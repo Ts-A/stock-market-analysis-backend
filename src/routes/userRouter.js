@@ -42,9 +42,11 @@ router.delete("/user", (req, res) => {
   }
 });
 // TODO: Login authentication
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   try {
-    res.status(202).json({ message: "Log in successful" });
+    const user = await User.findOne({ mail: req.body.mail });
+    if (user.password !== req.body.password) throw new Error("Unauthenticated");
+    res.status(202).json({ message: "success", user });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -52,7 +54,7 @@ router.post("/login", (req, res) => {
 // TODO: Logs out
 router.get("/logout", (req, res) => {
   try {
-    res.status(202).json({ message: "Log out successful" });
+    res.status(202).json({ message: "success" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
