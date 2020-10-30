@@ -20,6 +20,10 @@ router.get("/getCount", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+// TODO: getStocks/:name
+// TODO: getIndices/:name
+// TODO: getStocks/graph
+// TODO: getIndices/graph
 // Fetches all the indices in the market
 router.get("/getIndices", async (req, res) => {
   try {

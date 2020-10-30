@@ -1,8 +1,6 @@
 const BOM = require("./BOMdb.json");
 const BSE = require("./BSEindex.json");
-const Stopwatch = require("../stopWatch");
 const { default: Axios } = require("axios");
-const time = new Stopwatch();
 const TopGainers = require("../database/topGainerSchema");
 const TopLosers = require("../database/topLoserSchema");
 const Potential = require("../database/potentialSchema");
@@ -10,10 +8,12 @@ const Active = require("../database/activeSchema");
 const Market = require("../database/marketSchema");
 const Indices = require("../database/indexSchema");
 
+// Stock Data : ["Date","Open","High","Low","Close","WAP","No. of Shares","No. of Trades","Total Turnover","Deliverable Quantity","% Deli. Qty to Traded Qty","Spread H-L","Spread C-O"]
+// Index Data : ["Date","Open","High","Low","Close"]
+
 const getStockData = async () => {
   try {
     let items = [];
-    time.start();
     for (var i = 0; i < BOM.length; i++) {
       const data = await getFromQuandl(BOM[i].BOMcode);
       const item = data?.data?.dataset;
@@ -25,11 +25,8 @@ const getStockData = async () => {
         BOMcode: BOM[i].BOMcode,
       };
       // data_indices : 145678
-      // column_names":["Date","Open","High","Low","Close","WAP","No. of Shares","No. of Trades","Total Turnover","Deliverable Quantity","% Deli. Qty to Traded Qty","Spread H-L","Spread C-O"]
       items.push(object);
-      console.log(`Received ${i + 1}/${BOM.length}`);
     }
-    time.stop();
     let validatedItems = validate(items);
     let marketAction = validatedItems; // marketAction - company name
     marketAction.forEach(async (item) => {
@@ -46,9 +43,7 @@ const getStockData = async () => {
       const query = { name: item.name };
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
       const success = await Market.findOneAndUpdate(query, object, options);
-      console.log(`${item.name} is pushed to database`);
     });
-    console.log("Added marketAction to DB");
     let mostActiveStocks = sortObjectArray(validatedItems, 6, "desc"); // most active - number of shares
     mostActiveStocks.forEach(async (item) => {
       const { name, end_date, data, BOMcode } = item;
@@ -61,9 +56,7 @@ const getStockData = async () => {
       const query = { name: item.name };
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
       const success = await Active.findOneAndUpdate(query, object, options);
-      console.log(`${item.name} is pushed to database`);
     });
-    console.log("Added Most Active to DB");
     let topGainers = sortObjectArray(validatedItems, 5, "desc"); // top gainers - wap
     topGainers.forEach(async (item) => {
       const { name, end_date, data, BOMcode } = item;
@@ -78,9 +71,7 @@ const getStockData = async () => {
       const query = { name: item.name };
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
       const success = await TopGainers.findOneAndUpdate(query, object, options);
-      console.log(`${item.name} is pushed to database`);
     });
-    console.log("Added top Gainers to DB");
     let topLosers = sortObjectArray(validatedItems, 5, "asc"); // top losers - wap
     topLosers.forEach(async (item) => {
       const { name, end_date, data, BOMcode } = item;
@@ -95,9 +86,7 @@ const getStockData = async () => {
       const query = { name: item.name };
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
       const success = await TopLosers.findOneAndUpdate(query, object, options);
-      console.log(`${item.name} is pushed to database`);
     });
-    console.log("Added top losers to db");
     let upwardPotential = sortObjectArray(validatedItems, 8, "desc"); // upward potential - turnover
     upwardPotential.forEach(async (item) => {
       const { name, end_date, data, BOMcode } = item;
@@ -111,19 +100,15 @@ const getStockData = async () => {
       const query = { name: item.name };
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
       const success = await Potential.findOneAndUpdate(query, object, options);
-      console.log(`${item.name} is pushed to database`);
     });
-    console.log("Added upward potential to DB");
   } catch (e) {
-    console.log(e);
-    time.stop();
+    throw new Error(e.message);
   }
 };
 
 const getIndices = async () => {
   try {
     let items = [];
-    time.start();
     for (var i = 0; i < BSE.length; i++) {
       const data = await getFromQuandl(BSE[i].CODE);
       const item = data?.data?.dataset;
@@ -135,11 +120,8 @@ const getIndices = async () => {
         BSEcode: BSE[i].CODE,
       };
       // data_indices : 1234
-      // column_names":["Date","Open","High","Low","Close"]
       items.push(object);
-      console.log(`Received ${i + 1}/${BSE.length}`);
     }
-    time.stop();
     let indices = validate(items); // Stock Indices - code name
     indices.forEach(async (item) => {
       const { name, end_date, data, BSEcode } = item;
@@ -155,12 +137,9 @@ const getIndices = async () => {
       const query = { name: item.name };
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
       const success = await Indices.findOneAndUpdate(query, object, options);
-      console.log(`${item.name} is pushed to database`);
     });
-    console.log("Added indices to DB");
   } catch (e) {
-    time.stop();
-    console.log(e);
+    throw new Error(e.message);
   }
 };
 
@@ -176,7 +155,7 @@ const getFromQuandl = async (code) => {
     );
     return data;
   } catch (e) {
-    console.log(e);
+    throw new Error(e.message);
   }
 };
 

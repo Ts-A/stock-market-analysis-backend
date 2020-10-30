@@ -5,12 +5,12 @@ const User = require("../database/userSchema");
 // Setting up an object router as router.
 const router = express();
 // Setting up routes (or) route end-points
-// Gets user details
+// TODO: Get user details
 router.get("/user", async (req, res) => {
   try {
-    const id = req.body.id;
-    const user = await User.findOne({ _id: id });
-    res.status(200).json({ user, message: "Success" });
+    // const id = req.body.id;
+    // const user = await User.findOne({ _id: id });
+    res.status(200).json({ message: "Success" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

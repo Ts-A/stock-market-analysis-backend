@@ -13,9 +13,6 @@ const cors = require("cors");
 cron.schedule(
   "0 22 * * *",
   () => {
-    console.log(
-      `Starting to get Data from API. Do not turn off the server or pc!!!`
-    );
     api.getStockData();
     api.getIndices();
   },
@@ -31,7 +28,7 @@ app.get("/", (req, res) => {
   try {
     res.json({ message: "Welcome to home page" });
   } catch (e) {
-    console.log(e);
+    res.status(400).json({message:"Error"})
   }
 });
 
@@ -39,10 +36,8 @@ app.use(userRouter);
 app.use(stockRouter);
 
 app.get("*", (req, res) => {
-  res.send("ERROR 404! Page not found");
+  res.status(400).json({message:"ERROR 404! Page not found"});
 });
 
 // Starting the server at the defined port = PORT
-app.listen(process.env.PORT, (req, res) => {
-  console.log(`Server started at port ${process.env.PORT}`);
-});
+app.listen(process.env.PORT);
