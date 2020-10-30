@@ -40,4 +40,4 @@ app.get("*", (req, res) => {
 });
 
 // Starting the server at the defined port = PORT
-app.listen(process.env.PORT);
+app.listen(process.env.PORT||80);
