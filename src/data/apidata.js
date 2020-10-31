@@ -13,9 +13,11 @@ const Indices = require("../database/indexSchema");
 
 const getStockData = async () => {
   try {
+    console.log("getting data");
     let items = [];
     for (var i = 0; i < BOM.length; i++) {
       const data = await getFromQuandl(BOM[i].BOMcode);
+      console.log(`Received ${i+1}/${BOM.length}`);
       const item = data?.data?.dataset;
       let object = {
         id: item?.id,
@@ -43,6 +45,7 @@ const getStockData = async () => {
       const query = { name: item.name };
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
       const success = await Market.findOneAndUpdate(query, object, options);
+      console.log(success.end_date);
     });
     let mostActiveStocks = sortObjectArray(validatedItems, 6, "desc"); // most active - number of shares
     mostActiveStocks.forEach(async (item) => {
@@ -100,6 +103,7 @@ const getStockData = async () => {
       const query = { name: item.name };
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
       const success = await Potential.findOneAndUpdate(query, object, options);
+      console.log("data retreived");
     });
   } catch (e) {
     throw new Error(e.message);
@@ -111,6 +115,7 @@ const getIndices = async () => {
     let items = [];
     for (var i = 0; i < BSE.length; i++) {
       const data = await getFromQuandl(BSE[i].CODE);
+      console.log(`Received index of ${i+1}/${BSE.length}`)
       const item = data?.data?.dataset;
       let object = {
         id: item?.id,

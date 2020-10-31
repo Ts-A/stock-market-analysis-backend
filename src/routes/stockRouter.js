@@ -20,6 +20,15 @@ router.get("/getCount", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+router.get("/getCodes", async (req,res) => {
+  try {
+    const indices = await Indices.find({},"BSEcode name -_id");
+    const stocks = await Market.find({},"BOMcode name -_id");
+    res.status(200).json({ indices, stocks });
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+})
 // TODO: getStocks/:name
 // TODO: getIndices/:name
 // TODO: getStocks/graph

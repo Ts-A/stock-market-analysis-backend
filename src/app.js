@@ -11,8 +11,9 @@ const api = require("./data/apidata");
 const cors = require("cors");
 // Run scripts
 cron.schedule(
-  "0 22 * * *",
+  "26 22 * * *",
   () => {
+    console.log("Starting the data");
     api.getStockData();
     api.getIndices();
   },
