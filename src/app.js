@@ -11,7 +11,7 @@ const api = require("./data/apidata");
 const cors = require("cors");
 // Run scripts
 cron.schedule(
-  "26 22 * * *",
+  "30 21 * * *",
   () => {
     console.log("Starting the data");
     api.getStockData();
@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
   try {
     res.json({ message: "Welcome to home page" });
   } catch (e) {
-    res.status(400).json({message:"Error"})
+    res.status(400).json({ message: "Error" });
   }
 });
 
@@ -37,8 +37,8 @@ app.use(userRouter);
 app.use(stockRouter);
 
 app.get("*", (req, res) => {
-  res.status(400).json({message:"ERROR 404! Page not found"});
+  res.status(400).json({ message: "ERROR 404! Page not found" });
 });
 
 // Starting the server at the defined port = PORT
-app.listen(process.env.PORT||80);
+app.listen(process.env.PORT || 80);

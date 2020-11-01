@@ -17,7 +17,7 @@ const getStockData = async () => {
     let items = [];
     for (var i = 0; i < BOM.length; i++) {
       const data = await getFromQuandl(BOM[i].BOMcode);
-      console.log(`Received ${i+1}/${BOM.length}`);
+      console.log(`Received ${i + 1}/${BOM.length}`);
       const item = data?.data?.dataset;
       let object = {
         id: item?.id,
@@ -115,7 +115,7 @@ const getIndices = async () => {
     let items = [];
     for (var i = 0; i < BSE.length; i++) {
       const data = await getFromQuandl(BSE[i].CODE);
-      console.log(`Received index of ${i+1}/${BSE.length}`)
+      console.log(`Received index of ${i + 1}/${BSE.length}`);
       const item = data?.data?.dataset;
       let object = {
         id: item?.id,

@@ -20,19 +20,16 @@ router.get("/getCount", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-router.get("/getCodes", async (req,res) => {
+// Available data display
+router.get("/getCodes", async (req, res) => {
   try {
-    const indices = await Indices.find({},"BSEcode name -_id");
-    const stocks = await Market.find({},"BOMcode name -_id");
+    const indices = await Indices.find({}, "BSEcode name -_id");
+    const stocks = await Market.find({}, "BOMcode name -_id");
     res.status(200).json({ indices, stocks });
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    res.status(400).json({ message: error.message });
   }
-})
-// TODO: getStocks/:name
-// TODO: getIndices/:name
-// TODO: getStocks/graph
-// TODO: getIndices/graph
+});
 // Fetches all the indices in the market
 router.get("/getIndices", async (req, res) => {
   try {
